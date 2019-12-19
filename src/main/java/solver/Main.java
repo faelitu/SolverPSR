@@ -30,25 +30,26 @@ public class Main {
             System.out.println(result.get(i).getNome() + " - " + atributo);
         }
     }
-    
+
     public static void main(String[] args) throws FileNotFoundException, IOException {
         LinkedList<No> nos = new LinkedList();
         LinkedList<Restricao> restricoes = new LinkedList();
-        String[] X, D = null, C; /* X = variaveis
+        String[] X, D = null, C;
+        /* X = variaveis
                                     D = dominio
                                     C = condicoes */
         No noAux = null, noAux2 = null;
-        
+
         File file = new File("australia.txt"); // instancia de entrada
         BufferedReader br = new BufferedReader(new FileReader(file));
-        
+
         String line;
         int count = 0;
-        while ((line = br.readLine()) != null) {
+        while ((line = br.readLine()) != null) { // LEITURA DO ARQUIVO
             if (count == 0) { // VARIAVEIS
                 X = line.split(",");
                 X[0] = X[0].substring(3);
-                X[X.length-1] = X[X.length-1].substring(0, X[X.length-1].length()-1);
+                X[X.length - 1] = X[X.length - 1].substring(0, X[X.length - 1].length() - 1);
                 for (int i = 0; i < X.length; i++) {
                     noAux = new No(i, X[i]);
                     nos.add(noAux);
@@ -56,60 +57,69 @@ public class Main {
             } else if (count == 1) { // DOMINIO
                 D = line.split(",");
                 D[0] = D[0].substring(3);
-                D[D.length-1] = D[D.length-1].substring(0, D[D.length-1].length()-1);
+                D[D.length - 1] = D[D.length - 1].substring(0, D[D.length - 1].length() - 1);
                 for (No no : nos) {
-                    for (int i = 0; i < D.length; i++)
+                    for (int i = 0; i < D.length; i++) {
                         no.insereNoDominio(i);
+                    }
                 }
             } else if (count == 2) { // RESTRICOES
                 C = line.split(",(?![^\\(\\[]*[\\]\\)])");
                 C[0] = C[0].substring(3);
-                C[C.length-1] = C[C.length-1].substring(0, C[C.length-1].length()-1);
+                C[C.length - 1] = C[C.length - 1].substring(0, C[C.length - 1].length() - 1);
                 for (int i = 0; i < C.length; i++) {
                     //System.out.println(C[i]);
                     String[] rests = C[i].split(",");
                     rests[0] = rests[0].substring(1);
-                    rests[rests.length-1] = rests[rests.length-1].substring(0, rests[rests.length-1].length()-1);
-                    for (int j = 0; j < rests.length; j++) {
-                        if (rests.length == 2) { // TUPLA
-                            int flag = 0;
-                            Integer valor = 0;
-                            for (int k = 0; k < D.length; k++) {
-                                if (rests[1].equals(D[k])) { // Tupla unaria
-                                    flag = 1;
-                                    valor = k;
-                                    break;
-                                } else { // Tupla binaria
-                                    flag = 2;
-                                }
-                            }
-                            
-                            for (No no : nos) {
-                                if (no.getNome().equals(rests[0])) {
-                                    noAux = no;
-                                } else if (flag == 2 && no.getNome().equals(rests[1])) {
-                                    noAux2 = no;
-                                }
-                            }
-                            
-                            if (flag == 1) { // Tupla unaria
-                                Tupla unaria = new Tupla(noAux, valor);
-                                Restricao r = new Restricao(unaria);
-                                restricoes.add(r);
-                            } else if (flag == 2) { // Tupla binaria
-                                Tupla binaria = new Tupla(noAux, noAux2);
-                                Restricao r = new Restricao(binaria);
-                                restricoes.add(r);
+                    rests[rests.length - 1] = rests[rests.length - 1].substring(0, rests[rests.length - 1].length() - 1);
+                    if (rests.length == 2) { // TUPLA
+                        int flag = 0;
+                        Integer valor = 0;
+                        for (int j = 0; j < D.length; j++) {
+                            if (rests[1].equals(D[j])) { // Tupla unaria
+                                flag = 1;
+                                valor = j;
+                                break;
+                            } else { // Tupla binaria
+                                flag = 2;
                             }
                         }
-                        
-                        if (rests.length > 2) { // TODOS DIFERENTES
-                            
+
+                        for (No no : nos) {
+                            if (no.getNome().equals(rests[0])) {
+                                noAux = no;
+                            } else if (flag == 2 && no.getNome().equals(rests[1])) {
+                                noAux2 = no;
+                            }
                         }
+
+                        if (flag == 1) { // Tupla unaria
+                            Tupla unaria = new Tupla(noAux, valor);
+                            Restricao r = new Restricao(unaria);
+                            restricoes.add(r);
+                        } else if (flag == 2) { // Tupla binaria
+                            Tupla binaria = new Tupla(noAux, noAux2);
+                            Restricao r = new Restricao(binaria);
+                            restricoes.add(r);
+                        }
+                    }
+
+                    if (rests.length > 2) { // TODOS DIFERENTES
+                        LinkedList<No> diffs = new LinkedList();
+                        for (No no : nos) {
+                            for (int j = 0; i < rests.length; i++) {
+                                if (no.getNome().equals(rests[j])) {
+                                    diffs.add(no);
+                                }
+                            }
+                        }
+                        TodosDiferentes td = new TodosDiferentes(diffs);
+                        Restricao r = new Restricao(td);
+                        restricoes.add(r);
                     }
                 }
             }
-            
+
             count++;
         } /* FIM Leitura de Intancia */
         
