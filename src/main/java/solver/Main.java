@@ -19,34 +19,57 @@ import java.util.LinkedList;
 public class Main {
     
     // funcao auxiliar para escrever os resultados na tela
-    public void escreve(LinkedList<No> result, String[] D) {
-        for (int i = 0; i < result.size(); i++) {
-            String atributo = null;
-            for (int j = 0; j < D.length; j++) {
-                if (result.get(i).getAtribuicao() == j) {
-                    atributo = D[j];
+    public void escreve(LinkedList<No> result, String[] D, String type) {
+        if (type.equals("sudoku")) {
+            int count = 1;
+            for (int i = 0; i < result.size(); i++) {
+                String atributo = null;
+                for (int j = 0; j < D.length; j++) {
+                    if (result.get(i).getAtribuicao() == j) {
+                        atributo = D[j];
+                    }
                 }
+                
+                if ((count/9) > 1) {
+                    count = 1;
+                    System.out.println("");
+                }
+                System.out.print(atributo+" ");
+                count++;
             }
-            System.out.println(result.get(i).getNome() + " - " + atributo);
+            System.out.println("\n");
+        } else {
+            for (int i = 0; i < result.size(); i++) {
+                String atributo = null;
+                for (int j = 0; j < D.length; j++) {
+                    if (result.get(i).getAtribuicao() == j) {
+                        atributo = D[j];
+                    }
+                }
+                System.out.println(result.get(i).getNome() + " - " + atributo);
+            }
         }
     }
 
     public static void main(String[] args) throws FileNotFoundException, IOException {
         LinkedList<No> nos = new LinkedList();
         LinkedList<Restricao> restricoes = new LinkedList();
-        String[] X, D = null, C;
+        String instancia = null;
+        String[] X = null, D = null, C = null;
         /* X = variaveis
                                     D = dominio
                                     C = condicoes */
         No noAux = null, noAux2 = null;
 
-        File file = new File("australia.txt"); // instancia de entrada
+        File file = new File("sudoku.txt"); // instancia de entrada
         BufferedReader br = new BufferedReader(new FileReader(file));
 
         String line;
         int count = 0;
         while ((line = br.readLine()) != null) { // LEITURA DO ARQUIVO
-            if (count == 0) { // VARIAVEIS
+            if (count == 0) { // TIPO DA INSTANCIA
+                instancia = line;
+            } else if (count == 1) { // VARIAVEIS
                 X = line.split(",");
                 X[0] = X[0].substring(3);
                 X[X.length - 1] = X[X.length - 1].substring(0, X[X.length - 1].length() - 1);
@@ -54,7 +77,7 @@ public class Main {
                     noAux = new No(i, X[i]);
                     nos.add(noAux);
                 }
-            } else if (count == 1) { // DOMINIO
+            } else if (count == 2) { // DOMINIO
                 D = line.split(",");
                 D[0] = D[0].substring(3);
                 D[D.length - 1] = D[D.length - 1].substring(0, D[D.length - 1].length() - 1);
@@ -63,7 +86,7 @@ public class Main {
                         no.insereNoDominio(i);
                     }
                 }
-            } else if (count == 2) { // RESTRICOES
+            } else if (count == 3) { // RESTRICOES
                 C = line.split(",(?![^\\(\\[]*[\\]\\)])");
                 C[0] = C[0].substring(3);
                 C[C.length - 1] = C[C.length - 1].substring(0, C[C.length - 1].length() - 1);
@@ -131,11 +154,26 @@ public class Main {
         System.out.println("\n############# NÓ MAIS RESTRITO #############\n");
         result = solver.solveMaisRestrita();
         solver.resetVars();
-        m.escreve(result, D);
+        m.escreve(result, D, instancia);
         
         System.out.println("\n############# NÓ MENOS RESTRITO #############\n");
         result = solver.solveMenosRestrita();
         solver.resetVars();
-        m.escreve(result, D);
+        m.escreve(result, D, instancia);
+        
+        System.out.print("X = ");
+        for (int i = 0; i < X.length; i++) {
+            System.out.print(X[i]+" ");
+        }
+        System.out.println("\n");
+        System.out.print("D = "+D);
+        for (int i = 0; i < D.length; i++) {
+            System.out.print(D[i]+" ");
+        }
+        System.out.println("\n");
+        System.out.print("C = "+C);
+        for (int i = 0; i < C.length; i++) {
+            System.out.print(C[i]+" ");
+        }
     }
 }

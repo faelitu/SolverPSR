@@ -1,3 +1,4 @@
+map
 X={AO,TN,Q,NGS,V,AM,T}
 D={vermelho,verde,azul}
 C={(AM,AO),(AM,TN),(AM,Q),(AM,NGS),(AM,V),(AO,TN),(TN,Q),(Q,NGS),(NGS,V)}
