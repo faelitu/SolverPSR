@@ -48,7 +48,16 @@ public class Solver {
     
     private void updateDominioR1() { // atualiza o dominio das variaveis em relacao as restricoes unarias
         for (Restricao r : restricoes) {
-            if (r.tipo.equals("TUPLA") && r.tupla.getOrdem() == 1) {
+            if (r.tipo.equals("TUPLA") && r.tupla.getOrdem() == 1 && r.tupla.isIgual()) { // se for relacao de igualdade
+                No aux = r.tupla.getNo1();
+                for (No no : variaveis) {
+                    if (no.getId() == aux.getId()) {
+                        LinkedList<Integer> dominio = new LinkedList();
+                        dominio.add(r.tupla.getValor());
+                        no.setDominio(dominio);
+                    }
+                }
+            } else if (r.tipo.equals("TUPLA") && r.tupla.getOrdem() == 1 && !r.tupla.isIgual()) { // se for relacao de diferenca
                 No aux = r.tupla.getNo1();
                 for (No no : variaveis) {
                     if (no.getId() == aux.getId()) {

@@ -93,6 +93,7 @@ public class Main {
                 for (int i = 0; i < C.length; i++) {
                     //System.out.println(C[i]);
                     String[] rests = C[i].split(",");
+                    boolean igual = (rests[0].charAt(0) == '['); // se a restricao e' do tipo de igualdade
                     rests[0] = rests[0].substring(1);
                     rests[rests.length - 1] = rests[rests.length - 1].substring(0, rests[rests.length - 1].length() - 1);
                     if (rests.length == 2) { // TUPLA
@@ -117,11 +118,11 @@ public class Main {
                         }
 
                         if (flag == 1) { // Tupla unaria
-                            Tupla unaria = new Tupla(noAux, valor);
+                            Tupla unaria = new Tupla(noAux, valor, igual);
                             Restricao r = new Restricao(unaria);
                             restricoes.add(r);
                         } else if (flag == 2) { // Tupla binaria
-                            Tupla binaria = new Tupla(noAux, noAux2);
+                            Tupla binaria = new Tupla(noAux, noAux2, igual);
                             Restricao r = new Restricao(binaria);
                             restricoes.add(r);
                         }
@@ -156,10 +157,10 @@ public class Main {
         solver.resetVars();
         m.escreve(result, D, instancia);
         
-        System.out.println("\n############# NÓ MENOS RESTRITO #############\n");
-        result = solver.solveMenosRestrita();
-        solver.resetVars();
-        m.escreve(result, D, instancia);
+        //System.out.println("\n############# NÓ MENOS RESTRITO #############\n");
+        //result = solver.solveMenosRestrita();
+        //solver.resetVars();
+        //m.escreve(result, D, instancia);
         
         System.out.print("X = ");
         for (int i = 0; i < X.length; i++) {

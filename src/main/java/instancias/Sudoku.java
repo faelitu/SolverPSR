@@ -81,11 +81,11 @@ public class Sudoku {
                 + "(A71,A72,A73,A81,A82,A83,A91,A92,A93),"
                 + "(A74,A75,A76,A84,A85,A86,A94,A95,A96),"
                 + "(A77,A78,A79,A87,A88,A89,A97,A98,A99)");
-            // Finally, set the unary restrictions
+            // Finally, set the unary restrictions of equality
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 if (matrix[i][j] != 0) {
-                    bw.append(",(A"+(i+1)+(j+1)+","+matrix[i][j]+")");
+                    bw.append(",[A"+(i+1)+(j+1)+","+matrix[i][j]+"]");
                 }
             }
         }
